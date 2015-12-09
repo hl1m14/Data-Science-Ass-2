@@ -18,9 +18,18 @@ col = db.blog
 total_num = col.count()
 print "total_num: ",total_num
 
+keys_list = []
+data = col.find().limit(1)
+
+for item in data:
+  keys_list = item.keys()
 
 
-col.update({'mr_status':{'$exists':True}},{'$set':{'mr_status':"inprocess"}},False,True);
+if keys_list.count('mr_status'):
+  if item['mr_status'] == 'processed':
+    col.update_many({'mr_status':{'$exists':True}},{'$set':{'mr_status':"inprocess"}});
+else:
+  col.update_many({'mr_status':{'$exists':False}},{'$set':{'mr_status':"inprocess"}});
 
 mapper = Code("""
 	              function() {
@@ -76,7 +85,7 @@ reducer = Code("""
 result = col.map_reduce(mapper, reducer, "bigram_result",query = {'mr_status':"inprocess",'text':{'$type':2}})
 
 
-col.update({'mr_status':"inprocess"},{'$set':{'mr_status':"processed"}},False,True);
+col.update_many({'mr_status':"inprocess"},{'$set':{'mr_status':"processed"}});
 
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^step 2 : count^^^^^^^^^^^^^^^^^#
 
