@@ -4,8 +4,7 @@ import pymongo
 client = MongoClient()
 db = client.limdata
 col = db.blog
-#build the index for searching fast
-col.create_index([('id_member',pymongo.DESCENDING)])
+
 total_num = col.count()
 print "total_num: ",total_num
 

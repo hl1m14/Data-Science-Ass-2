@@ -47,7 +47,7 @@ mapper = Code("""
             return arrNewWords;
         }
       var unigrams =  uniqueWords(this.text) ;
-      emit(this.id_member, {unigrams:unigrams});
+      emit(this._id, {unigrams:unigrams});
 };
 
 	              """)
